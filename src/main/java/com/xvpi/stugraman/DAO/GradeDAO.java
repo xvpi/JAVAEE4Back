@@ -1,6 +1,6 @@
 package com.xvpi.stugraman.DAO;
 
-import com.xvpi.stugraman.entity.Grade;
+import com.xvpi.stugraman.beans.Grade;
 import com.xvpi.stugraman.utils.DBUtil;
 
 import java.sql.*;
@@ -44,7 +44,7 @@ public class GradeDAO {
       List<Map<String, Object>> resultList = new ArrayList<>();
       String query = "SELECT s.student_id, p.name AS student_name, c.course_name, g.total_score " +
               "FROM Student s " +
-              "JOIN Person p ON s.student_id = p.id " + // 连接 Person 表以获取学生姓名
+              "JOIN Person p ON s.student_id = p.person_id " + // 连接 Person 表以获取学生姓名
               "JOIN Grade g ON s.student_id = g.student_id " +
               "JOIN Class cl ON g.class_id = cl.class_id " +
               "JOIN Course c ON cl.course_id = c.course_id";

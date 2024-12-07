@@ -1,10 +1,10 @@
 package com.xvpi.stugraman.strategy;
 
 import com.xvpi.stugraman.DAO.CourseDAO;
-import com.xvpi.stugraman.entity.Class;
-import com.xvpi.stugraman.entity.Course;
+import com.xvpi.stugraman.beans.Class;
+import com.xvpi.stugraman.beans.Course;
 
-import static com.xvpi.stugraman.StuGraManApplication.classDAO;
+import static com.xvpi.stugraman.strategy.SearchStrategy.classDAO;
 
 public class GetCourseName {
     // 获取课程名称的辅助方法教学班id得到课程名称

@@ -1,7 +1,7 @@
 package com.xvpi.stugraman.strategy;
 
-import com.xvpi.stugraman.entity.Class;
-import com.xvpi.stugraman.entity.Grade;
+import com.xvpi.stugraman.beans.Class;
+import com.xvpi.stugraman.beans.Grade;
 
 import java.util.List;
 

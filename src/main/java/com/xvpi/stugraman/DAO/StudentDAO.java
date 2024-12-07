@@ -1,7 +1,8 @@
 package com.xvpi.stugraman.DAO;
 
-import com.xvpi.stugraman.entity.Student;
+import com.xvpi.stugraman.beans.Student;
 import com.xvpi.stugraman.utils.DBUtil;
+import org.springframework.stereotype.Component;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -19,9 +20,9 @@ public class StudentDAO extends GenericDAO<Student> {
     @Override
     public List<Student> getAll() {
         List<Student> entities = new ArrayList<>();
-        String query = "SELECT p.id, p.name, p.gender, s.major " +
+        String query = "SELECT p.person_id, p.name, p.gender, s.major " +
                 "FROM Person p " +
-                "JOIN Student s ON p.id = s.student_id " +
+                "JOIN Student s ON p.person_id = s.student_id " +
                 "WHERE p.type = ?"; // 这里使用 '?' 占位符来绑定参数
 
         try (Connection conn = DBUtil.getConnection();
@@ -39,11 +40,27 @@ public class StudentDAO extends GenericDAO<Student> {
     @Override
     protected Student createEntity(ResultSet rs) throws SQLException {
         return new Student(
-                rs.getString("id"),
+                rs.getString("person_id"),
                 rs.getString("name"),
                 rs.getString("gender"),
                 rs.getString("major")
         );
     }
+
+    public Boolean updateMajor(String studentId, String major) {
+
+        String query = "UPDATE student SET major = ? WHERE student_id = ?";
+        try (Connection conn = DBUtil.getConnection();
+            PreparedStatement pstmt = conn.prepareStatement(query)) {
+            pstmt.setString(1, major);
+            pstmt.setString(2, studentId);
+            pstmt.executeUpdate();
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
 
 }

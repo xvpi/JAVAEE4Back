@@ -1,6 +1,6 @@
 package com.xvpi.stugraman.DAO;
 
-import com.xvpi.stugraman.entity.Class;
+import com.xvpi.stugraman.beans.Class;
 import com.xvpi.stugraman.utils.DBUtil;
 
 import java.sql.*;

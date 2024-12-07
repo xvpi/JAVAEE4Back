@@ -1,8 +1,8 @@
 package com.xvpi.stugraman.strategy;
 
 import com.xvpi.stugraman.DAO.*;
-import com.xvpi.stugraman.entity.*;
-import com.xvpi.stugraman.entity.Class;
+import com.xvpi.stugraman.beans.*;
+import com.xvpi.stugraman.beans.Class;
 
 import java.sql.Date;
 import java.util.List;
@@ -16,6 +16,7 @@ import java.util.stream.IntStream;
 public class DataInitializer {
     private final StudentDAO studentDAO = new StudentDAO();
     private final TeacherDAO teacherDAO = new TeacherDAO();
+    private final UserDAO userDAO = new UserDAO();
     private final ClassDAO classDAO = new ClassDAO();
     private final CourseDAO courseDAO = new CourseDAO();
     private final GradeDAO gradeDAO = new GradeDAO();
@@ -71,6 +72,7 @@ public class DataInitializer {
     private void clearDatabase() {
         gradeDAO.deleteAllGrades();
         classDAO.deleteAllClasses();
+        userDAO.deleteAllUsers();
         studentDAO.deleteAll();
         teacherDAO.deleteAll();
         courseDAO.deleteAllCourses();
@@ -88,6 +90,7 @@ public class DataInitializer {
         String gender = random.nextBoolean() ? "男" : "女";
         String name = generateRandomName(gender);
         String major = majors[random.nextInt(majors.length)]; // 随机选择一个专业
+
         return new Student(studentId, name, gender, major); // 假设 Student 类有一个 major 属性
     }
 
@@ -97,6 +100,7 @@ public class DataInitializer {
         String gender = random.nextBoolean() ? "男" : "女";
         String name = generateRandomName(gender);
         String title = titles[random.nextInt(titles.length)]; // 随机选择一个职称
+
         return new Teacher(teacherId, name, gender, title); // 假设 Teacher 类有一个 title 属性
     }
 

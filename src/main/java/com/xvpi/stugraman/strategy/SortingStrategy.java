@@ -1,6 +1,6 @@
 package com.xvpi.stugraman.strategy;
 
-import com.xvpi.stugraman.entity.Grade;
+import com.xvpi.stugraman.beans.Grade;
 
 import java.util.Collections;
 import java.util.Comparator;

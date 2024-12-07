@@ -1,13 +1,13 @@
 package com.xvpi.stugraman.DAO;
 
-import com.xvpi.stugraman.entity.Person;
-import com.xvpi.stugraman.entity.Student;
-import com.xvpi.stugraman.entity.Teacher;
+import com.xvpi.stugraman.beans.*;
 import com.xvpi.stugraman.utils.DBUtil;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
+
 public abstract class GenericDAO<T> {
     protected abstract String getType(); // 返回实体类型（如 'Student' 或 'Teacher'）
     protected abstract T createEntity(ResultSet rs) throws SQLException; // 创建实体对象
@@ -30,8 +30,8 @@ public abstract class GenericDAO<T> {
 
     public T getById(String id) {
         String query = "SELECT p.*, s.major FROM Person p " +
-                "LEFT JOIN Student s ON p.id = s.student_id " + // 使用LEFT JOIN以确保获取所有Person
-                "WHERE p.id = ? AND p.type = ?";
+                "LEFT JOIN Student s ON p.person_id = s.student_id " + // 使用LEFT JOIN以确保获取所有Person
+                "WHERE p.person_id = ? AND p.type = ?";
         try (Connection conn = DBUtil.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(query)) {
             pstmt.setString(1, id);
@@ -50,7 +50,7 @@ public abstract class GenericDAO<T> {
     public List<T> getByName(String name) {
         List<T> entities = new ArrayList<>();
         String query = "SELECT p.*, s.major FROM Person p " +
-                "LEFT JOIN Student s ON p.id = s.student_id " + // 连接Student表
+                "LEFT JOIN Student s ON p.person_id = s.student_id " + // 连接Student表
                 "WHERE p.name = ? AND p.type = ?";
 
         try (Connection conn = DBUtil.getConnection();
@@ -69,15 +69,15 @@ public abstract class GenericDAO<T> {
 
 
     public void insert(T entity) {
-        String personQuery = "INSERT INTO Person (id, name, gender, type) VALUES (?, ?, ?, ?)";
+        String personQuery = "INSERT INTO Person (person_id, name, gender, type) VALUES (?, ?, ?, ?)";
         String specificQuery = null;
 
         if (entity instanceof Student) {
-            specificQuery = "INSERT INTO Student (student_id, major) VALUES (?, ?)";
+            specificQuery = "INSERT INTO Student (student_id, major,person_id) VALUES (?, ?, ?)";
         } else if (entity instanceof Teacher) {
-            specificQuery = "INSERT INTO Teacher (teacher_id, title) VALUES (?, ?)";
+            specificQuery = "INSERT INTO Teacher (teacher_id, title,person_id) VALUES (?, ?, ?)";
         }
-
+        String userQuery = "INSERT INTO User (user_id, username, password_hash, role, person_id) VALUES (?, ?, ?, ?, ?)";
         try (Connection conn = DBUtil.getConnection()) {
             conn.setAutoCommit(false); // 启用事务
 
@@ -97,12 +97,29 @@ public abstract class GenericDAO<T> {
                     if (entity instanceof Student) {
                         String major = ((Student) entity).getMajor();
                         specificStmt.setString(2, major);
+
                     } else if (entity instanceof Teacher) {
                         String title = ((Teacher) entity).getTitle();
                         specificStmt.setString(2, title);
+
                     }
+                    specificStmt.setString(3, ((Person) entity).getId());
                     specificStmt.executeUpdate();
                 }
+            }
+            // 插入 User 表（无论是 Student 还是 Teacher 都需要插入 User）
+            try (PreparedStatement userStmt = conn.prepareStatement(userQuery)) {
+                String username = ((Person) entity).getName();  // 你可以根据需要生成用户名
+                Random random = new Random();
+                String password = String.format("%d", random.nextInt(1000000));  // 随机生成一个密码
+                String role = entity instanceof Student ? "student" : "teacher";  // 根据角色设置
+
+                userStmt.setString(1, ((Person) entity).getId());  // user_id 使用 person_id
+                userStmt.setString(2, username);  // 假设用户名是人的名字
+                userStmt.setString(3, password);  // 使用生成的密码
+                userStmt.setString(4, role);      // 角色是 "student" 或 "teacher"
+                userStmt.setString(5, ((Person) entity).getId());  // person_id 是 personId
+                userStmt.executeUpdate();
             }
 
             conn.commit(); // 提交事务
@@ -146,10 +163,10 @@ public abstract class GenericDAO<T> {
     // 根据教学班ID获取所有学生
     public List<Student> getStudentsByClassId(String classId) {
         List<Student> studentList = new ArrayList<>();
-        String query = "SELECT p.id, p.name, p.gender, s.major " +
+        String query = "SELECT p.person_id, p.name, p.gender, s.major " +
                 "FROM Person p " +
-                "JOIN Grade g ON p.id = g.student_id " +
-                "JOIN Student s ON p.id = s.student_id " + // 确保连接到Student表
+                "JOIN Grade g ON p.person_id = g.student_id " +
+                "JOIN Student s ON p.person_id = s.student_id " + // 确保连接到Student表
                 "WHERE g.class_id = ? AND p.type = 'Student'";
 
         try (Connection conn = DBUtil.getConnection();
@@ -159,7 +176,7 @@ public abstract class GenericDAO<T> {
 
             while (rs.next()) {
                 Student student = new Student(
-                        rs.getString("id"),
+                        rs.getString("person_id"),
                         rs.getString("name"),
                         rs.getString("gender"),
                         rs.getString("major")

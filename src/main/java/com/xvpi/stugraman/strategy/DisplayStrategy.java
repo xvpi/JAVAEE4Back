@@ -1,8 +1,8 @@
 package com.xvpi.stugraman.strategy;
 
 import com.xvpi.stugraman.DAO.CourseDAO;
-import com.xvpi.stugraman.entity.Class;
-import com.xvpi.stugraman.entity.*;
+import com.xvpi.stugraman.beans.Class;
+import com.xvpi.stugraman.beans.*;
 import com.xvpi.stugraman.utils.BarChartCreator;
 import com.xvpi.stugraman.utils.TablePrinter;
 
@@ -10,6 +10,7 @@ import java.util.*;
 
 import static com.xvpi.stugraman.StuGraManApplication.*;
 import static com.xvpi.stugraman.strategy.GetCourseName.getCourseName;
+import static com.xvpi.stugraman.strategy.SearchStrategy.*;
 
 public interface DisplayStrategy<T> {
     void display(T data);

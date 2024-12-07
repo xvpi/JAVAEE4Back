@@ -1,15 +1,14 @@
-package com.xvpi.stugraman.entity;
+package com.xvpi.stugraman.beans;
 
+import javax.persistence.*;
+
+@Entity
 public class Course {
+    @Id
+    @Column(name = "course_id")
     private String courseId;
-    private String courseName;
-    private String teacherNames;
-    public Course() {}
 
-    public Course(String courseId, String courseName) {
-        this.courseId = courseId;
-        this.courseName = courseName;
-    }
+    private String courseName;
 
     public String getTeacherNames() {
         return teacherNames;
@@ -19,7 +18,17 @@ public class Course {
         this.teacherNames = teacherNames;
     }
 
+    private String teacherNames;
+    public Course(String courseId, String courseName) {
+        this.courseId = courseId;
+        this.courseName = courseName;
+    }
 
+    public Course() {
+
+    }
+
+    // Getter 和 Setter 方法
     public String getCourseId() {
         return courseId;
     }
@@ -36,8 +45,6 @@ public class Course {
         this.courseName = courseName;
     }
 
-    @Override
-    public String toString() {
-        return "Course [courseId=" + courseId + ", courseName=" + courseName + "]";
-    }
+
 }
+

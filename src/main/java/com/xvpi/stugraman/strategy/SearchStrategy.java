@@ -1,11 +1,8 @@
 package com.xvpi.stugraman.strategy;
 
 import com.xvpi.stugraman.DAO.*;
-import com.xvpi.stugraman.entity.Class;
-import com.xvpi.stugraman.entity.Course;
-import com.xvpi.stugraman.entity.Grade;
-import com.xvpi.stugraman.entity.Student;
-import com.xvpi.stugraman.entity.Teacher;
+import com.xvpi.stugraman.beans.Class;
+import com.xvpi.stugraman.beans.*;
 import com.xvpi.stugraman.utils.TablePrinter;
 
 import java.util.ArrayList;
