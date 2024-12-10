@@ -6,6 +6,25 @@ public class Class {
     private String semester;
     private String teacherId;
     private String courseId;
+
+    public String getTeacherName() {
+        return teacherName;
+    }
+
+    public void setTeacherName(String teacherName) {
+        this.teacherName = teacherName;
+    }
+
+    public String getCourseName() {
+        return courseName;
+    }
+
+    public void setCourseName(String courseName) {
+        this.courseName = courseName;
+    }
+
+    private String teacherName;
+    private String courseName;
     private int totalStudents;
 
     public Class() {}

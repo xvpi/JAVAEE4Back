@@ -2,11 +2,14 @@ package com.xvpi.stugraman.beans;
 
 import java.io.Serializable;
 import java.util.Objects;
+import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 @Embeddable
 public class GradeId implements Serializable {
+
     private String studentId;
+
     private String classId;
 
     // 必须要提供无参构造方法

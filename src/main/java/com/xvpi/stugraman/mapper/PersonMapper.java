@@ -16,4 +16,8 @@ public interface PersonMapper extends BaseMapper<Person> {
     @Insert("insert into person (person_id,name,gender,type) values (#{arg0},#{arg1},#{arg2}," +
             "#{arg3})")
     int addPerson(String id, String name, String gender, String role);
+    @Select("SELECT * FROM person where person_id = #{arg0}")
+    Person getPersonById(String id);
+    @Select("SELECT name FROM person where person_id = #{arg0}")
+    String getNameById(String sid);
 }

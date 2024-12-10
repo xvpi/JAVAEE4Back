@@ -28,9 +28,15 @@ public interface CourseMapper extends BaseMapper<Person> {
     @Select("SELECT name FROM studb_new.person WHERE person_id IN (SELECT teacher_id FROM studb_new.class WHERE " +
             "course_id = #{courseId})")
     List<String> getTeacherNamesByCourseId(String courseId);
-
+    @Select("SELECT course_name from course where course_id = #{arg0}")
+    String getCourseNameById(String Id);
     @Select("SELECT * FROM studb_new.course WHERE course_name LIKE CONCAT('%', #{courseName}, '%')")
     List<Course> selectCourseByName(String courseName);
     @Select("SELECT COUNT(*) FROM course where course_id = #{arg0}")
     Boolean findById(String courseId);
+    @Select("SELECT course_id FROM course where course_name LIKE CONCAT('%', #{courseName}, '%')")
+    String findIdByName(String courseName);
+    @Select("SELECT * FROM course where course_id = #{arg0}")
+    List<Course> getCoursesById(String id);
+
 }

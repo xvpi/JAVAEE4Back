@@ -6,11 +6,10 @@ import javax.persistence.*;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.Random;
+
 
 @Entity
 public class Teacher extends Person {
-    private final Random random = new Random();
     @Id
     private String teacherId;
 
@@ -25,7 +24,15 @@ public class Teacher extends Person {
     public Teacher() {
 
     }
+    public String getPassword() {
+        return password;
+    }
 
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    private String password;
     public String getPersonId() {
         return personId;
     }

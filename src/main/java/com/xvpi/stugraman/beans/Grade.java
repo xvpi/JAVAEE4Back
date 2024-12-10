@@ -2,6 +2,7 @@ package com.xvpi.stugraman.beans;
 
 import java.io.Serializable;
 import java.sql.Date;
+import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
@@ -14,13 +15,61 @@ public class Grade implements Serializable {
     @EmbeddedId
     private GradeId gradeId;
 
+
+    @Column(name = "regular_score")
     private Integer regularScore;
+    @Column(name = "midterm_score")
     private Integer midtermScore;
+    @Column(name = "lab_score")
     private Integer labScore;
+    @Column(name = "final_score")
     private Integer finalScore;
+    @Column(name = "total_score")
     private Integer totalScore;
+    @Column(name = "grade_date")
     private java.sql.Date gradeDate;
+
+    public Integer getRank() {
+        return rank;
+    }
+
+    public void setRank(Integer rank) {
+        this.rank = rank;
+    }
+
+    private Integer rank;
+    public String getCourseName() {
+        return courseName;
+    }
+
+    public void setCourseName(String courseName) {
+        this.courseName = courseName;
+    }
+
+    public String getTeacherName() {
+        return teacherName;
+    }
+
+    public void setTeacherName(String teacherName) {
+        this.teacherName = teacherName;
+    }
+
+    private String courseName;
+    private String teacherName;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    private String name;
     public Grade(String studentId, String classId, int regularScore, int midtermScore, int labScore, int finalScore, int totalScore, Date gradeDate) {
+        if (this.gradeId == null) {
+            this.gradeId = new GradeId();
+        }
         this.gradeId = new GradeId(studentId,classId);
         this.regularScore = regularScore;
         this.midtermScore = midtermScore;
@@ -89,13 +138,18 @@ public class Grade implements Serializable {
     }
 
     public void setGradeDate(Date gradeDate) {
-        this.gradeDate = gradeDate;
+        if (this.gradeId == null) {
+            this.gradeId = new GradeId();
+        }this.gradeDate = gradeDate;
     }
     public String getStudentId() {
         return gradeId.getStudentId();
     }
 
     public void setStudentId(String studentId) {
+        if (this.gradeId == null) {
+            this.gradeId = new GradeId();
+        }
         gradeId.setStudentId(studentId);
     }
 

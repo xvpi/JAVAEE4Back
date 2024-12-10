@@ -23,11 +23,13 @@ public class PersonService {
     private TeacherMapper teacherMapper;
     @Autowired
     private GradeMapper gradeMapper;
-    public Result login(String username,String password,String role) {
+    public Result login(String userId,String password,String role) {
         Result res = new Result();
         try{
-            System.out.println("Login attempt with username: " + username + ", role: " + role);
-            User user = userMapper.login(username, password,role);
+            System.out.println("Login attempt with userid: " + userId + ", role: " + role);
+            User user = userMapper.login(userId, password,role);
+            userMapper.updateTime(userId);
+
             if(user == null){
                 res.setStatus(false);
                 res.setResult("账户或密码错误！");
@@ -44,11 +46,12 @@ public class PersonService {
             return res;
         }
     }
-    public Result register(String username,String password,String role, String gender,String title,String major) {
+    public Result register(String userId,String username,String password,String role, String gender,String title,
+                           String major) {
         Result res = new Result();
         try{
             // 1. 插入到 person 表（生成 person.id）
-            String personId = UUID.randomUUID().toString();
+            String personId = userId;
             Person person = new Person();
             person.setId(personId);
             person.setName(username);
@@ -57,7 +60,7 @@ public class PersonService {
             personMapper.insert(person);  // 插入 person 表
             // 2. 插入到 user 表
             User user = new User();
-            user.setUserId(UUID.randomUUID().toString());
+            user.setUserId(userId);
             user.setUsername(username);
             user.setPasswordHash(password); // 加密密码
             user.setRole(User.Role.valueOf(role));
@@ -68,14 +71,14 @@ public class PersonService {
             if ("student".equals(role)) {
                 // 注册学生
                 Student student = new Student();
-                student.setStudentId(UUID.randomUUID().toString());  // 学生ID
+                student.setStudentId(userId);  // 学生ID
                 student.setMajor(major);
-                student.setPersonId(personId);  // 关联 person.id
+                student.setPersonId(userId);  // 关联 person.id
                 studentMapper.insert(student);  // 插入到 student 表
             } else if ("teacher".equals(role)) {
                 // 注册教师
                 Teacher teacher = new Teacher();
-                teacher.setTeacherId(UUID.randomUUID().toString());  // 教师ID
+                teacher.setTeacherId(userId);  // 教师ID
                 teacher.setTitle(title);
                 teacher.setPersonId(personId);  // 关联 person.id
                 teacherMapper.insert(teacher);  // 插入到 teacher 表
@@ -141,9 +144,11 @@ public class PersonService {
         Result res = new Result();
         //List<Student> students = studentDAO.getAll();
         try{
-            System.out.println("Get student by name attemp"+name);
+            System.out.println("Get student by name/id attemp"+name);
 
             List<Student>  students = studentMapper.getStuByName(name);
+            Student stu = studentMapper.getStudentById(name);
+            if(stu!= null) students.add(stu);
             if(students == null){
                 res.setStatus(false);
                 res.setResult("所有学生查询结果为空！");

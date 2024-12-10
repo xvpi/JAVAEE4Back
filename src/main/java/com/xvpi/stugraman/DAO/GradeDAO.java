@@ -42,7 +42,7 @@ public class GradeDAO {
   //获取各科总成绩，和成绩之和
   public List<Map<String, Object>> getStudentGradesSummary() {
       List<Map<String, Object>> resultList = new ArrayList<>();
-      String query = "SELECT s.student_id, p.name AS student_name, c.course_name, g.total_score " +
+      String query = "SELECT s.student_id, p.name AS student_name, c.course_name, g.total_score,g.grade_date " +
               "FROM Student s " +
               "JOIN Person p ON s.student_id = p.person_id " + // 连接 Person 表以获取学生姓名
               "JOIN Grade g ON s.student_id = g.student_id " +
@@ -61,17 +61,19 @@ public class GradeDAO {
               String studentName = rs.getString("student_name"); // 从 Person 表中获取学生姓名
               String courseName = rs.getString("course_name");
               int totalScore = rs.getInt("total_score");
-
+              Date gradeDate = rs.getDate("grade_date");
               // 添加课程名到集合
               courseNames.add(courseName);
 
               // 创建或更新学生成绩信息
               studentScoresMap.computeIfAbsent(studentId, k -> new HashMap<>()).put("studentName", studentName);
+              studentScoresMap.computeIfAbsent(studentId, k -> new HashMap<>()).put("gradeDate", gradeDate);
               studentScoresMap.get(studentId).computeIfAbsent("scores", k -> new HashMap<String, Integer>());
               ((Map<String, Integer>) studentScoresMap.get(studentId).get("scores")).put(courseName, totalScore);
           }
 
           // 计算每个学生的总成绩，并构建结果
+          List<Map<String, Object>> studentsWithTotalGrade = new ArrayList<>();
           for (Map.Entry<String, Map<String, Object>> entry : studentScoresMap.entrySet()) {
               String studentId = entry.getKey();
               Map<String, Object> studentInfo = entry.getValue();
@@ -86,13 +88,24 @@ public class GradeDAO {
               row.put("studentName", studentInfo.get("studentName"));
               row.put("scores", scores);
               row.put("totalGrade", totalGrade);
-
-              resultList.add(row);
+              row.put("gradeDate", studentInfo.get("gradeDate"));
+              studentsWithTotalGrade.add(row);
           }
 
-          // 生成课程名称的列表，用于打印表头
-          List<String> courseList = new ArrayList<>(courseNames);
-          // 你可以将 courseList 传递给打印函数以生成表头
+          // 排序，按照总成绩降序排序
+          studentsWithTotalGrade.sort((student1, student2) -> {
+              int totalGrade1 = (int) student1.get("totalGrade");
+              int totalGrade2 = (int) student2.get("totalGrade");
+              return Integer.compare(totalGrade2, totalGrade1);  // 从高到低排序
+          });
+
+          // 为每个学生分配排名
+          for (int rank = 0; rank < studentsWithTotalGrade.size(); rank++) {
+              studentsWithTotalGrade.get(rank).put("rank", rank + 1);  // 排名从1开始
+          }
+
+          // 将排序后的数据添加到结果列表中
+          resultList.addAll(studentsWithTotalGrade);
 
       } catch (SQLException e) {
           e.printStackTrace();
@@ -100,6 +113,7 @@ public class GradeDAO {
 
       return resultList;
   }
+
 
 
 

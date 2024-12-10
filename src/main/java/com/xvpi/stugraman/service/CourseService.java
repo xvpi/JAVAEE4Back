@@ -25,7 +25,8 @@ public class CourseService {
     private GradeMapper gradeMapper;
     @Autowired
     private CourseMapper courseMapper;
-
+    @Autowired
+    private ClassMapper classMapper;
     // 查询所有课程及其对应的授课老师
     public Result getAllCourses() {
         Result res = new Result();
@@ -94,8 +95,14 @@ public class CourseService {
         Result res = new Result();
         try {
             System.out.println("Delete Course attemp:"+courseId);
-            int rowsAffected = courseMapper.deleteCourse(courseId);
-            if ( rowsAffected > 0) {
+            List<String> classIds = classMapper.findClassIdByCourseId(courseId);
+            int rowsAffectedcl=1,rowsAffectedg=1;
+            for(String classId :classIds){
+                rowsAffectedg = gradeMapper.deleteGradeById(classId);
+                rowsAffectedcl = classMapper.deleteClassById(classId);
+            }
+            int rowsAffectedc = courseMapper.deleteCourse(courseId);
+            if (rowsAffectedc > 0) {
                 res.setStatus(true);
                 res.setResult("课程删除成功");
             } else {

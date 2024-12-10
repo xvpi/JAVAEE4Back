@@ -34,6 +34,23 @@ public class Class {
 
     @Column(name = "course_id")
     private String courseId;
+    public String getCourseName() {
+        return courseName;
+    }
+
+    public void setCourseName(String courseName) {
+        this.courseName = courseName;
+    }
+
+    public String getTeacherName() {
+        return teacherName;
+    }
+
+    public void setTeacherName(String teacherName) {
+        this.teacherName = teacherName;
+    }
+
+    private String courseName;private String teacherName;
     @ManyToOne
     @JoinColumn(name = "teacher_id")
     private Teacher teacher;

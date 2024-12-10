@@ -11,7 +11,7 @@ import java.util.Random;
 public class Student extends Person {
 
     private String major;
-
+    private String password;
     public Student(String studentId, String name, String gender, String major) {
         super(studentId, name, gender, "Student");  // 设置类型为 Student
         this.major = major;

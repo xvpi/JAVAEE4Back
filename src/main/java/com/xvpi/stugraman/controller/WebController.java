@@ -26,21 +26,22 @@ public class WebController {
     }
     @ApiOperation(value = "用户登录接口")
     @GetMapping("/webLogin")
-    public Result login(@RequestParam("username") String username,
+    public Result login(@RequestParam("userId") String userId,
                         @RequestParam("password") String password,
                         @RequestParam("role") String role) {
-        return personService.login(username,password,role);
+        return personService.login(userId,password,role);
     }
 
     @ApiOperation(value = "用户注册接口")
     @GetMapping("/webRegister")
-    public Result regeister(@RequestParam("username") String username,
+    public Result regeister(@RequestParam("userId") String userId,
+                        @RequestParam("username") String username,
                         @RequestParam("password") String password,
                         @RequestParam("role") String role,
                         @RequestParam("gender") String gender,
                         @RequestParam("title") String title,
                         @RequestParam("major") String major) {
-        return personService.register(username,password,role,gender,title,major);
+        return personService.register(userId,username,password,role,gender,title,major);
     }
     @ApiOperation("初始化学生数据")
     @GetMapping("/initialData")

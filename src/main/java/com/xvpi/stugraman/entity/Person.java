@@ -35,4 +35,14 @@ public abstract class Person {
     }
 
     public abstract String getRole();  // 返回角色方法，由子类实现
+
+    @Override
+    public String toString() {
+        return "Person{" +
+                "id='" + id + '\'' +
+                ", name='" + name + '\'' +
+                ", gender='" + gender + '\'' +
+                ", type='" + type + '\'' +
+                '}';
+    }
 }

@@ -7,9 +7,29 @@ public class Course {
     @Id
     @Column(name = "course_id")
     private String courseId;
-
+    @Column(name = "course_name")
     private String courseName;
 
+    private String teacherNames;
+
+    public String getClassId() {
+        return classId;
+    }
+
+    public void setClassId(String classId) {
+        this.classId = classId;
+    }
+
+    public String getClassName() {
+        return className;
+    }
+
+    public void setClassNames(String className) {
+        this.className = className;
+    }
+
+    private String classId;
+    private String className;
     public String getTeacherNames() {
         return teacherNames;
     }
@@ -18,7 +38,7 @@ public class Course {
         this.teacherNames = teacherNames;
     }
 
-    private String teacherNames;
+
     public Course(String courseId, String courseName) {
         this.courseId = courseId;
         this.courseName = courseName;
