@@ -47,20 +47,6 @@ public class StudentDAO extends GenericDAO<Student> {
         );
     }
 
-    public Boolean updateMajor(String studentId, String major) {
-
-        String query = "UPDATE student SET major = ? WHERE student_id = ?";
-        try (Connection conn = DBUtil.getConnection();
-            PreparedStatement pstmt = conn.prepareStatement(query)) {
-            pstmt.setString(1, major);
-            pstmt.setString(2, studentId);
-            pstmt.executeUpdate();
-            return true;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
 
 
 }

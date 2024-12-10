@@ -1,11 +1,9 @@
 package com.xvpi.stugraman.service;
 
-import com.xvpi.stugraman.DAO.GradeDAO;
-import com.xvpi.stugraman.DAO.StudentDAO;
+
 import com.xvpi.stugraman.beans.Class;
 import com.xvpi.stugraman.beans.*;
 import com.xvpi.stugraman.mapper.*;
-import com.xvpi.stugraman.strategy.DataInitializer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
@@ -28,14 +26,67 @@ public class GradeService {
     private CourseMapper courseMapper;
     @Autowired
     private ClassMapper classMapper;
-    // 查询所有教学班及其对应的授课老师
-    private final GradeDAO gradeDAO = new GradeDAO();
     public Result getAllGrades() {
         Result res = new Result();
         try{
             System.out.println("Get all grades attemp");
-            List<Map<String, Object>>  list = gradeDAO.getStudentGradesSummary();
-            if(list == null){
+            List<Map<String, Object>> resultList = new ArrayList<>();
+            List<Map<String, Object>> gradeData = gradeMapper.getStudentGradesSummary();
+            // 使用 HashMap 来存储学生成绩信息
+            Map<String, Map<String, Object>> studentScoresMap = new HashMap<>();
+            Set<String> courseNames = new HashSet<>();
+            // 遍历成绩数据，将其按学生ID进行分类
+            for (Map<String, Object> row : gradeData) {
+                String studentId = (String) row.get("student_id");
+                String studentName = (String) row.get("student_name");
+                String courseName = (String) row.get("course_name");
+                Integer totalScore = (Integer) row.get("total_score");
+                Date gradeDate = (Date) row.get("grade_date");
+
+                // 添加课程名到集合
+                courseNames.add(courseName);
+
+                studentScoresMap.computeIfAbsent(studentId, k -> new HashMap<>()).put("studentName", studentName);
+                studentScoresMap.computeIfAbsent(studentId, k -> new HashMap<>()).put("gradeDate", gradeDate);
+                studentScoresMap.get(studentId).computeIfAbsent("scores", k -> new HashMap<String, Integer>());
+                ((Map<String, Integer>) studentScoresMap.get(studentId).get("scores")).put(courseName, totalScore);
+            }
+
+            // 计算每个学生的总成绩，并构建结果
+            List<Map<String, Object>> studentsWithTotalGrade = new ArrayList<>();
+            for (Map.Entry<String, Map<String, Object>> entry : studentScoresMap.entrySet()) {
+                String studentId = entry.getKey();
+                Map<String, Object> studentInfo = entry.getValue();
+                Map<String, Integer> scores = (Map<String, Integer>) studentInfo.get("scores");
+
+                int totalGrade = scores.values().stream().mapToInt(Integer::intValue).sum();
+                studentInfo.put("totalGrade", totalGrade);
+
+                // 构建行数据
+                Map<String, Object> row = new HashMap<>();
+                row.put("studentId", studentId);
+                row.put("studentName", studentInfo.get("studentName"));
+                row.put("scores", scores);
+                row.put("totalGrade", totalGrade);
+                row.put("gradeDate", studentInfo.get("gradeDate"));
+                studentsWithTotalGrade.add(row);
+            }
+
+            // 排序，按照总成绩降序排序
+            studentsWithTotalGrade.sort((student1, student2) -> {
+                int totalGrade1 = (int) student1.get("totalGrade");
+                int totalGrade2 = (int) student2.get("totalGrade");
+                return Integer.compare(totalGrade2, totalGrade1);  // 从高到低排序
+            });
+
+            // 为每个学生分配排名
+            for (int rank = 0; rank < studentsWithTotalGrade.size(); rank++) {
+                studentsWithTotalGrade.get(rank).put("rank", rank + 1);  // 排名从1开始
+            }
+
+            resultList.addAll(studentsWithTotalGrade);
+
+            if(resultList == null){
                 res.setStatus(false);
                 res.setResult("所有成绩查询结果为空！");
                 res.setTotal(0);  // 如果查询结果为空，total 设置为 0
@@ -43,8 +94,8 @@ public class GradeService {
                 return res;
             }
             res.setStatus(true);
-            res.setResult(list);
-            res.setTotal(list.size());
+            res.setResult(resultList);
+            res.setTotal(resultList.size());
             return res;
         } catch (DataAccessException e){
             e.printStackTrace();
@@ -300,7 +351,16 @@ public class GradeService {
         Result res = new Result();
         try{
             System.out.println("Get all grades attemp");
-            List<Map<String, Object>>  list = gradeDAO.getStudentGradesSummary();
+            Result tmp = getAllGrades();
+            if(tmp.getStatus() == false){
+                res.setStatus(false);
+                res.setResult("所有成绩查询结果为空！");
+                res.setTotal(0);  // 如果查询结果为空，total 设置为 0
+                System.out.println("查询结果为空，请检查！");
+                return res;
+            }
+            List<Map<String, Object>>  list = (List<Map<String, Object>>)tmp.getResult();
+            //List<Map<String, Object>>  list = gradeDAO.getStudentGradesSummary();
             List<Map<String, Object>> ls = new ArrayList<>();
             if(list == null){
                 res.setStatus(false);

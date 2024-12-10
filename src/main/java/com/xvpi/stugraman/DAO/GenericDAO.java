@@ -28,46 +28,6 @@ public abstract class GenericDAO<T> {
         return entities;
     }
 
-    public T getById(String id) {
-        String query = "SELECT p.*, s.major FROM Person p " +
-                "LEFT JOIN Student s ON p.person_id = s.student_id " + // 使用LEFT JOIN以确保获取所有Person
-                "WHERE p.person_id = ? AND p.type = ?";
-        try (Connection conn = DBUtil.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(query)) {
-            pstmt.setString(1, id);
-            pstmt.setString(2, getType());
-            ResultSet rs = pstmt.executeQuery();
-            if (rs.next()) {
-                return createEntity(rs);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-
-    public List<T> getByName(String name) {
-        List<T> entities = new ArrayList<>();
-        String query = "SELECT p.*, s.major FROM Person p " +
-                "LEFT JOIN Student s ON p.person_id = s.student_id " + // 连接Student表
-                "WHERE p.name = ? AND p.type = ?";
-
-        try (Connection conn = DBUtil.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(query)) {
-            pstmt.setString(1, name);
-            pstmt.setString(2, getType());
-            ResultSet rs = pstmt.executeQuery();
-            while (rs.next()) {
-                entities.add(createEntity(rs));
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return entities;
-    }
-
-
     public void insert(T entity) {
         String personQuery = "INSERT INTO Person (person_id, name, gender, type) VALUES (?, ?, ?, ?)";
         String specificQuery = null;
@@ -160,34 +120,5 @@ public abstract class GenericDAO<T> {
         }
     }
 
-    // 根据教学班ID获取所有学生
-    public List<Student> getStudentsByClassId(String classId) {
-        List<Student> studentList = new ArrayList<>();
-        String query = "SELECT p.person_id, p.name, p.gender, s.major " +
-                "FROM Person p " +
-                "JOIN Grade g ON p.person_id = g.student_id " +
-                "JOIN Student s ON p.person_id = s.student_id " + // 确保连接到Student表
-                "WHERE g.class_id = ? AND p.type = 'Student'";
-
-        try (Connection conn = DBUtil.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(query)) {
-            pstmt.setString(1, classId);
-            ResultSet rs = pstmt.executeQuery();
-
-            while (rs.next()) {
-                Student student = new Student(
-                        rs.getString("person_id"),
-                        rs.getString("name"),
-                        rs.getString("gender"),
-                        rs.getString("major")
-                );
-                studentList.add(student);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        return studentList;
-    }
 
 }

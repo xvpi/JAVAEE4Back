@@ -42,6 +42,10 @@ public interface ClassMapper extends BaseMapper<Person> {
     List<String> findClassIdByCourseId(String courseId);
     @Select("SELECT * FROM class where course_id = #{arg0}")
     List<Class> findClassByCourseId(String courseId);
+    @Select("SELECT c.* FROM class c " +
+            "JOIN grade g ON c.class_id = g.class_id " +
+            "WHERE g.student_id = #{arg0}")
+    List<Class> findClassByStudentId(String studentId);
     @Select("SELECT * FROM class where class_id = #{arg0}")
     Class getClassById(String classId);
     @Select("SELECT * FROM class where course_id = #{arg0} ")
@@ -52,5 +56,6 @@ public interface ClassMapper extends BaseMapper<Person> {
     String getTeacherIdById(String classId);
     @Select("SELECT student_id FROM grade where class_id = #{arg0}")
     List<String> getStudentsByClassId(String id);
-
+    @Delete("DELETE FROM studb_new.class")
+    void deleteAllClasses();
 }

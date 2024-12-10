@@ -19,6 +19,7 @@ public interface UserMapper extends BaseMapper<User> {
     int changePassword(String id, String password);
     @Update( "UPDATE user SET last_login_at = CURRENT_TIMESTAMP WHERE user_id = #{arg0}")
     void updateTime(String userId);
-//    @Insert("insert into User (name,gender,type) values (#{arg0},#{arg1},#{arg2})")
-//    void insertUser(String username, String gender, String type);
+    @Delete("DELETE FROM user")
+    void deleteAllUsers();
+
 }

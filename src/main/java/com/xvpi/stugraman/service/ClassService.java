@@ -1,10 +1,8 @@
 package com.xvpi.stugraman.service;
 
-import com.xvpi.stugraman.DAO.StudentDAO;
 import com.xvpi.stugraman.beans.Class;
 import com.xvpi.stugraman.beans.*;
 import com.xvpi.stugraman.mapper.*;
-import com.xvpi.stugraman.strategy.DataInitializer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
@@ -12,8 +10,6 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.UUID;
-import java.util.regex.Pattern;
 
 @Service
 public class ClassService {
@@ -34,7 +30,6 @@ public class ClassService {
     // 查询所有教学班及其对应的授课老师
     public Result getAllClasses() {
         Result res = new Result();
-        //List<Student> students = studentDAO.getAll();
         try{
             System.out.println("Get all classes attemp");
             List<Class> classes = classMapper.selectAllClasses();
@@ -163,7 +158,6 @@ public class ClassService {
 
     public Result getStudentsByClassId(String id) {
         Result res = new Result();
-        //List<Student> students = studentDAO.getAll();
         try{
             System.out.println("Get students by class id attemp:"+id);
 

@@ -1,6 +1,5 @@
 package com.xvpi.stugraman.service;
 
-import com.xvpi.stugraman.DAO.TeacherDAO;
 import com.xvpi.stugraman.beans.*;
 import com.xvpi.stugraman.beans.Class;
 import com.xvpi.stugraman.mapper.*;
@@ -26,16 +25,15 @@ public class TeacherService {
     private ClassMapper classMapper;
     @Autowired
     private GradeMapper gradeMapper;
-    private final TeacherDAO teacherDAO = new TeacherDAO();
     public Result getAllTeachers() {
         Result res = new Result();
         try{
             System.out.println("Get all teachers attemp");
 
-            List<Teacher>  teachers = teacherDAO.getAll();
+            List<Teacher>  teachers = teacherMapper.getAllTeachers();
             if(teachers == null){
                 res.setStatus(false);
-                res.setResult("所有老师查询结果为空！");
+                res.setResult("所有学生查询结果为空！");
                 res.setTotal(0);  // 如果查询结果为空，total 设置为 0
                 System.out.println("查询结果为空，请检查！");
                 return res;
@@ -84,7 +82,7 @@ public class TeacherService {
 
         Result res = new Result();
         try {
-            String id=teacher.getId();
+            String id=teacher.getTeacherId();
             String title =teacher.getTitle();
             System.out.println("Change title attemp:"+id+" "+title);
             boolean isUpdated = teacherMapper.updateTitle(id, title);

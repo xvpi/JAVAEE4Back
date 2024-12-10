@@ -8,6 +8,7 @@ import org.apache.ibatis.annotations.*;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 @Mapper
 public interface GradeMapper extends BaseMapper<Person> {
@@ -31,4 +32,18 @@ public interface GradeMapper extends BaseMapper<Person> {
             "#{arg1} and " +
             "student_id = #{arg0}")
     boolean saveStudentScores(String sid, String cid, int rs, int ms, int ls, int fs, int ts, Date gd);
+    @Select("SELECT s.student_id, p.name AS student_name, c.course_name, g.total_score, g.grade_date "+
+            "FROM Student s " +
+            "JOIN Person p ON s.student_id = p.person_id "+
+            "JOIN Grade g ON s.student_id = g.student_id "+
+            "JOIN Class cl ON g.class_id = cl.class_id "+
+            "JOIN Course c ON cl.course_id = c.course_id")
+    List<Map<String, Object>> getStudentGradesSummary();
+    @Delete("DELETE FROM grade ")
+    void deleteAllGrades();
+    @Insert("INSERT INTO studb_new.grade (student_id, class_id, regular_score, midterm_score, lab_score,final_score," +
+            "total_score, grade_date) VALUES (#{student_id}, #{class_id}, #{regular_score}, #{midterm_score}, " +
+            "#{lab_score}," +
+            "#{final_score},#{total_score}, #{grade_date})")
+    void insertGrade(Grade grade);
 }

@@ -1,6 +1,6 @@
 package com.xvpi.stugraman.service;
 
-import com.xvpi.stugraman.DAO.TeacherDAO;
+
 import com.xvpi.stugraman.beans.*;
 import com.xvpi.stugraman.beans.Class;
 import com.xvpi.stugraman.mapper.*;
@@ -29,32 +29,7 @@ public class StudentService {
     @Autowired
     private CourseMapper courseMapper;
 
-    private final TeacherDAO teacherDAO = new TeacherDAO();
-    public Result getAllTeachers() {
-        Result res = new Result();
-        try{
-            System.out.println("Get all teachers attemp");
 
-            List<Teacher>  teachers = teacherDAO.getAll();
-            if(teachers == null){
-                res.setStatus(false);
-                res.setResult("所有学生查询结果为空！");
-                res.setTotal(0);  // 如果查询结果为空，total 设置为 0
-                System.out.println("查询结果为空，请检查！");
-                return res;
-            }
-            res.setStatus(true);
-            res.setResult(teachers);
-            res.setTotal(teachers.size());
-            return res;
-        } catch (DataAccessException e){
-            e.printStackTrace();
-            res.setStatus(false);
-            res.setResult("异常: " + e.getMessage());
-            res.setTotal(0);  // 发生异常时，total 设置为 0
-            return res;
-        }
-    }
     public Result getTeacherByName(String name) {
         Result res = new Result();
         try{

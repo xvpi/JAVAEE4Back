@@ -1,15 +1,11 @@
 package com.xvpi.stugraman.service;
-
-        import com.xvpi.stugraman.DAO.StudentDAO;
         import com.xvpi.stugraman.beans.*;
         import com.xvpi.stugraman.mapper.*;
-        import com.xvpi.stugraman.strategy.DataInitializer;
         import org.springframework.beans.factory.annotation.Autowired;
         import org.springframework.dao.DataAccessException;
         import org.springframework.stereotype.Service;
 
         import java.util.List;
-        import java.util.UUID;
 
 @Service
 public class CourseService {
@@ -30,7 +26,6 @@ public class CourseService {
     // 查询所有课程及其对应的授课老师
     public Result getAllCourses() {
         Result res = new Result();
-        //List<Student> students = studentDAO.getAll();
         try{
             System.out.println("Get all courses attemp");
 

@@ -38,5 +38,6 @@ public interface CourseMapper extends BaseMapper<Person> {
     String findIdByName(String courseName);
     @Select("SELECT * FROM course where course_id = #{arg0}")
     List<Course> getCoursesById(String id);
-
+    @Delete("DELETE FROM course")
+    void deleteAllCourses();
 }

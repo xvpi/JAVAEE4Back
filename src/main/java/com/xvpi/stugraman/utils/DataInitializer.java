@@ -1,4 +1,4 @@
-package com.xvpi.stugraman.strategy;
+package com.xvpi.stugraman.utils;
 
 import com.xvpi.stugraman.DAO.*;
 import com.xvpi.stugraman.beans.*;

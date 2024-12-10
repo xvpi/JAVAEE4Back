@@ -2,10 +2,8 @@ package com.xvpi.stugraman.beans;
 
 import java.io.Serializable;
 import java.sql.Date;
-import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import java.util.Map;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "grade")
@@ -153,6 +151,16 @@ public class Grade implements Serializable {
         gradeId.setStudentId(studentId);
     }
 
+    public Map<String, Integer> getScores() {
+        return scores;
+    }
+
+    public void setScores(Map<String, Integer> scores) {
+        this.scores = scores;
+    }
+
+    @ElementCollection
+    private Map<String, Integer> scores;
     public String getClassId() {
         return gradeId.getClassId();
     }

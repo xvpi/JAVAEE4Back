@@ -44,20 +44,4 @@ public class StudentController {
     }
 
 
-//    @ApiOperation("换职称操作")
-//    @PutMapping("/changeTitle")
-//    public Result changeTitle(@RequestBody Teacher teacher) {
-//        return teacherService.changeTitle(teacher);
-//    }
-//    @ApiOperation("删除对应学生信息")
-//    @DeleteMapping("/teacherDelete/{id}")
-//    public Result deleteTeacherbyId(@PathVariable("id") String id) {
-//        return teacherService.deleteTeacherbyId(id);
-//    }
-//    @ApiOperation("新增学生")
-//    @PostMapping("/addTeacher")
-//    public Result addTeacher(@RequestBody Teacher teacher) {
-//        return teacherService.addTeacher(teacher);
-//    }
-
 }

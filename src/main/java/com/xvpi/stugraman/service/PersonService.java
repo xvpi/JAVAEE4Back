@@ -1,15 +1,13 @@
 package com.xvpi.stugraman.service;
 
-import com.xvpi.stugraman.DAO.StudentDAO;
 import com.xvpi.stugraman.beans.*;
 import com.xvpi.stugraman.mapper.*;
-import com.xvpi.stugraman.strategy.DataInitializer;
+import com.xvpi.stugraman.utils.DataInitializer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.UUID;
 
 @Service
 public class PersonService {
@@ -113,14 +111,12 @@ public class PersonService {
         }
 
     }
-    private final StudentDAO studentDAO = new StudentDAO();
+
     public Result getAllStudents() {
         Result res = new Result();
-        //List<Student> students = studentDAO.getAll();
         try{
             System.out.println("Get all students attemp");
-
-            List<Student>  students = studentDAO.getAll();
+            List<Student>  students = studentMapper.getAllStudents();
             if(students == null){
                 res.setStatus(false);
                 res.setResult("所有学生查询结果为空！");
@@ -142,7 +138,6 @@ public class PersonService {
     }
     public Result getStuByName(String name) {
         Result res = new Result();
-        //List<Student> students = studentDAO.getAll();
         try{
             System.out.println("Get student by name/id attemp"+name);
 
@@ -173,10 +168,10 @@ public class PersonService {
 
         Result res = new Result();
         try {
-            String id=student.getId();
+            String id=student.getStudentId();
             String major =student.getMajor();
             System.out.println("Change major attemp:"+id+" "+major);
-            boolean isUpdated = studentDAO.updateMajor(id, major);
+            boolean isUpdated = studentMapper.updateMajor(id, major);
             if (isUpdated) {
                 res.setStatus(true);
                 res.setResult("学生专业更新成功");
@@ -201,7 +196,7 @@ public class PersonService {
             int isUsdDeleted = userMapper.deleteUserById(id);
             int isPsDeleted = personMapper.deletePersonById(id);
 
-            if (isGdDeleted>0 && isStuDeleted>0 && isUsdDeleted>0 && isPsDeleted>0) {
+            if (isPsDeleted>0) {
                 res.setStatus(true);
                 res.setResult("学生删除成功");
             } else {

@@ -28,4 +28,11 @@ public interface TeacherMapper extends BaseMapper<Teacher> {
     Teacher getTeacherById(String id);
     @Select("SELECT class_id FROM class where teacher_id = #{arg0}")
     List<String> getClassIdsByTeacherId(String id);
+    @Select("SELECT p.person_id, t.teacher_id, p.name, p.gender, t.title, p.type " +
+            "FROM Person p " +
+            "JOIN Teacher t ON p.person_id = t.teacher_id " +
+            "WHERE p.type = 'teacher'")
+    List<Teacher> getAllTeachers();
+    @Delete("DELETE FROM teacher")
+    void deleteAll();
 }
